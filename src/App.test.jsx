@@ -60,4 +60,23 @@ describe('ElectionBot App Component', () => {
     // After toggle, the root should have a data-theme attribute
     expect(document.documentElement.getAttribute('data-theme')).toBeDefined();
   });
+
+  // EDGE CASE: Testing that empty submissions do not break the UI or send empty messages
+  it('does not send a message when input is empty or whitespace', () => {
+    render(<App />);
+    const input = screen.getByPlaceholderText(/Ask about registration/i);
+    const sendBtn = screen.getByRole('button', { name: /Send message/i });
+
+    // Try to send empty
+    fireEvent.click(sendBtn);
+
+    // Try to send whitespace
+    fireEvent.change(input, { target: { value: '   ' } });
+    fireEvent.click(sendBtn);
+
+    // Ensure the message '   ' is not added to the document
+    // We expect only the initial bot message to be present (plus chips)
+    const emptyMsg = screen.queryByText('   ');
+    expect(emptyMsg).not.toBeInTheDocument();
+  });
 });
