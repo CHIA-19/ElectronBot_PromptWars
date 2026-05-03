@@ -15,67 +15,147 @@ const SUGGESTED_CHIPS = [
   "When is the registration deadline?",
 ];
 
-// ── Upcoming Elections — Real dates from Wikipedia (auto-selects nearest) ────
-const UPCOMING_ELECTIONS = [
-  { name: "Haryana Municipal Corp Elections", type: "🏛️ Local Body", date: new Date('2026-05-10T00:00:00'), region: "Haryana, India" },
-  { name: "2026 US Primary Elections",         type: "🇺🇸 US Primary", date: new Date('2026-06-02T00:00:00'), region: "United States" },
-  { name: "Himachal Pradesh Local Body",       type: "🏛️ Local Body", date: new Date('2026-06-15T00:00:00'), region: "Himachal Pradesh, India" },
-  { name: "2026 US Midterm Elections",         type: "🇺🇸 US Midterm", date: new Date('2026-11-03T00:00:00'), region: "United States" },
-  { name: "2028 US Presidential Election",     type: "🇺🇸 Presidential", date: new Date('2028-11-07T00:00:00'), region: "United States" },
-];
+// ── Election data by State → District ────────────────────────────────────────
+const ELECTION_DATA = {
+  "Haryana": {
+    type: "🏛️ Local Body Elections",
+    date: "May 10, 2026",
+    isoDate: "2026-05-10",
+    districts: {
+      "Ambala":    { body: "Ambala Municipal Corporation",   date: "2026-05-10", type: "Municipal Corporation" },
+      "Panchkula": { body: "Panchkula Municipal Corporation",date: "2026-05-10", type: "Municipal Corporation" },
+      "Sonipat":   { body: "Sonipat Municipal Corporation",  date: "2026-05-10", type: "Municipal Corporation" },
+    }
+  },
+  "Himachal Pradesh": {
+    type: "🏛️ Local Body Elections",
+    date: "June 2026 (TBD)",
+    isoDate: "2026-06-15",
+    districts: {
+      "Dharamshala": { body: "Dharamshala Municipal Corporation", date: "2026-06-15", type: "Municipal Corporation" },
+      "Shimla":      { body: "Shimla Municipal Corporation",      date: "2026-06-15", type: "Municipal Corporation" },
+    }
+  },
+  "United States": {
+    type: "🇺🇸 US Midterm Elections",
+    date: "November 3, 2026",
+    isoDate: "2026-11-03",
+    districts: {
+      "California":  { body: "CA General Election",    date: "2026-11-03", type: "State General" },
+      "Texas":       { body: "TX General Election",    date: "2026-11-03", type: "State General" },
+      "New York":    { body: "NY General Election",    date: "2026-11-03", type: "State General" },
+      "Florida":     { body: "FL General Election",    date: "2026-11-03", type: "State General" },
+    }
+  },
+};
 
-const getNextElection = () => {
-  const now = new Date();
-  return UPCOMING_ELECTIONS.find(e => e.date > now) || UPCOMING_ELECTIONS[UPCOMING_ELECTIONS.length - 1];
+const selectStyle = {
+  width: '100%',
+  padding: '7px 10px',
+  borderRadius: 10,
+  border: '1px solid var(--glass-border)',
+  background: 'var(--glass-bg)',
+  color: 'var(--text-primary)',
+  fontSize: '0.82rem',
+  cursor: 'pointer',
+  outline: 'none',
+  fontFamily: 'Inter, sans-serif',
+  marginBottom: '0.5rem',
 };
 
 /**
- * CountdownTimer — Shows days/hours/minutes until the next upcoming election.
- * Automatically picks the nearest future election from the list above.
+ * CountdownTimer — Interactive State → District selector with live countdown.
+ * Election dates sourced from Wikipedia 2026 India elections page.
  */
 const CountdownTimer = () => {
-  const nextElection = getNextElection();
+  const states = Object.keys(ELECTION_DATA);
+  const [selectedState, setSelectedState] = useState(states[0]);
+  const [selectedDistrict, setSelectedDistrict] = useState(Object.keys(ELECTION_DATA[states[0]].districts)[0]);
   const [timeLeft, setTimeLeft] = useState({});
+
+  const stateData = ELECTION_DATA[selectedState];
+  const districtData = stateData?.districts[selectedDistrict];
+  const targetDate = new Date(districtData?.date || stateData?.isoDate);
+
+  // Reset district when state changes
+  const handleStateChange = (e) => {
+    const s = e.target.value;
+    setSelectedState(s);
+    setSelectedDistrict(Object.keys(ELECTION_DATA[s].districts)[0]);
+  };
 
   useEffect(() => {
     const calc = () => {
-      const diff = nextElection.date - new Date();
+      const diff = targetDate - new Date();
       if (diff <= 0) return setTimeLeft({ expired: true });
       setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        days:    Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours:   Math.floor((diff / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((diff / (1000 * 60)) % 60),
       });
     };
     calc();
     const id = setInterval(calc, 60000);
     return () => clearInterval(id);
-  }, []);
+  }, [selectedState, selectedDistrict]);
 
-  if (timeLeft.expired) return <p style={{ color: 'var(--primary-color)', fontWeight: 600 }}>Election Day is here! 🗳️</p>;
+  const searchQuery = districtData
+    ? `${districtData.body} election ${districtData.date}`
+    : `${selectedState} election 2026`;
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '0.72rem', background: 'rgba(59,130,246,0.2)', color: 'var(--primary-color)', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{nextElection.type}</span>
-        <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>{nextElection.region}</span>
-      </div>
-      <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', marginBottom: '0.5rem', fontWeight: 500 }}>
-        📅 {nextElection.name}
-      </p>
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '0.6rem' }}>
-        {[['days', 'Days'], ['hours', 'Hrs'], ['minutes', 'Min']].map(([key, label]) => (
-          <div key={key} style={{ textAlign: 'center', background: 'rgba(59,130,246,0.15)', borderRadius: 10, padding: '8px 12px', minWidth: 52 }}>
-            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--primary-color)', lineHeight: 1 }}>{timeLeft[key] ?? '--'}</div>
-            <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: 2 }}>{label}</div>
+      {/* State Selector */}
+      <label htmlFor="state-select" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '3px' }}>Select State / Country</label>
+      <select id="state-select" value={selectedState} onChange={handleStateChange} style={selectStyle} aria-label="Select state">
+        {states.map(s => <option key={s} value={s}>{s}</option>)}
+      </select>
+
+      {/* District Selector */}
+      <label htmlFor="district-select" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '3px' }}>Select District / Region</label>
+      <select
+        id="district-select"
+        value={selectedDistrict}
+        onChange={e => setSelectedDistrict(e.target.value)}
+        style={selectStyle}
+        aria-label="Select district"
+      >
+        {Object.keys(stateData.districts).map(d => <option key={d} value={d}>{d}</option>)}
+      </select>
+
+      {/* Election Info */}
+      {districtData && (
+        <div style={{ background: 'rgba(59,130,246,0.08)', borderRadius: 10, padding: '8px 10px', marginBottom: '0.5rem', border: '1px solid rgba(59,130,246,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+            <span style={{ fontSize: '0.7rem', background: 'rgba(59,130,246,0.2)', color: 'var(--primary-color)', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{stateData.type}</span>
           </div>
-        ))}
-      </div>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600, margin: '2px 0' }}>📍 {selectedDistrict}</p>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', margin: '2px 0' }}>{districtData.body}</p>
+          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', margin: '2px 0' }}>🗓️ {districtData.type} · {districtData.date}</p>
+        </div>
+      )}
+
+      {/* Countdown */}
+      {timeLeft.expired
+        ? <p style={{ color: 'var(--primary-color)', fontWeight: 600, textAlign: 'center' }}>Election Day is here! 🗳️</p>
+        : (
+          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '0.5rem' }}>
+            {[['days', 'Days'], ['hours', 'Hrs'], ['minutes', 'Min']].map(([key, label]) => (
+              <div key={key} style={{ textAlign: 'center', background: 'rgba(59,130,246,0.15)', borderRadius: 10, padding: '7px 10px', minWidth: 48 }}>
+                <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--primary-color)', lineHeight: 1 }}>{timeLeft[key] ?? '--'}</div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', marginTop: 2 }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      {/* Google Search Link */}
       <a
-        href={`https://www.google.com/search?q=${encodeURIComponent(nextElection.name + ' ' + nextElection.region + ' election date 2026')}`}
+        href={`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`}
         target="_blank" rel="noreferrer noopener"
         style={{ fontSize: '0.72rem', color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'center' }}
-        aria-label={`Search for more info about ${nextElection.name}`}
+        aria-label={`Search for more info about ${selectedDistrict} election`}
       >
         🔍 Search for more info
       </a>
