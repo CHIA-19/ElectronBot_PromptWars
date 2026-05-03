@@ -655,29 +655,29 @@ function App() {
             <button 
               id="btn-check-registration"
               className="btn-secondary" 
-              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%' }}
+              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%', background: 'var(--glass-bg)', borderColor: 'var(--glass-border)' }}
               onClick={() => handleSend("How do I check my voter registration status?")}
               aria-label="Ask about voter registration"
             >
-              <Search size={18} aria-hidden="true" /> Check Registration
+              <Search size={18} aria-hidden="true" style={{ color: 'var(--text-secondary)' }} /> Check Registration
             </button>
             <button 
               id="btn-find-polling"
               className="btn-secondary" 
-              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%' }}
+              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%', background: 'var(--glass-bg)', borderColor: 'var(--glass-border)' }}
               onClick={() => handleSend("Where is my nearest polling place? My address is [Enter Address]")}
               aria-label="Find nearest polling place"
             >
-              <MapPin size={18} aria-hidden="true" /> Find Polling Place
+              <MapPin size={18} aria-hidden="true" style={{ color: 'var(--text-secondary)' }} /> Find Polling Place
             </button>
             <button 
               id="btn-deadlines"
               className="btn-secondary" 
-              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%' }}
+              style={{ justifyContent: 'flex-start', display: 'flex', gap: '12px', width: '100%', background: 'var(--glass-bg)', borderColor: 'var(--glass-border)' }}
               onClick={() => handleSend("What are the upcoming election deadlines?")}
               aria-label="View election deadlines"
             >
-              <Calendar size={18} aria-hidden="true" /> Election Deadlines
+              <Calendar size={18} aria-hidden="true" style={{ color: 'var(--text-secondary)' }} /> Election Deadlines
             </button>
           </div>
         </section>
