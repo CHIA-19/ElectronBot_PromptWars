@@ -600,20 +600,10 @@ function App() {
             <button
               key={i}
               id={`chip-${i}`}
+              className="chip-btn"
               onClick={() => handleSend(chip)}
               disabled={isLoading}
               aria-label={`Ask: ${chip}`}
-              style={{
-                background: 'rgba(59,130,246,0.1)',
-                border: '1px solid rgba(59,130,246,0.3)',
-                borderRadius: '20px',
-                padding: '4px 12px',
-                fontSize: '0.75rem',
-                color: 'var(--primary-color)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.2s'
-              }}
             >
               {chip}
             </button>
@@ -696,7 +686,7 @@ function App() {
           <h2 id="official-sources-heading" className="font-outfit" style={{ marginBottom: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Official Sources</h2>
           <div className="glass-panel" role="complementary" style={{ padding: '1rem', borderRadius: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
             <p style={{ marginBottom: '0.5rem' }}><Info size={14} aria-hidden="true" style={{ marginRight: '4px' }} /> Always verify with your local election authority.</p>
-            <a href="https://vote.gov" target="_blank" rel="noreferrer noopener" style={{ color: 'var(--primary-color)', textDecoration: 'none' }} aria-label="Vote.gov - Official US Voting Information (opens in new tab)">Vote.gov</a>
+            <a href="https://voters.eci.gov.in/" target="_blank" rel="noreferrer noopener" style={{ color: 'var(--primary-color)', textDecoration: 'none' }} aria-label="NVSP - Official Indian Voters' Services Portal (opens in new tab)">Voters' Services Portal (ECI)</a>
           </div>
         </section>
       </aside>
