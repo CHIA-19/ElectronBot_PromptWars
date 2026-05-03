@@ -627,7 +627,7 @@ function App() {
             <button 
               id="btn-send"
               className="btn-primary" 
-              onClick={handleSend} 
+              onClick={() => handleSend()} 
               style={{ padding: '8px 12px' }}
               aria-label="Send message"
               disabled={isLoading}
