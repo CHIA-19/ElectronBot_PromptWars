@@ -5,6 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Security: Content Security Policy to prevent XSS and injection attacks -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:;" />
+
     <!-- SEO Meta Tags -->
     <title>ElectionBot — Your Civic Education Assistant</title>
     <meta name="description" content="ElectionBot is a nonpartisan civic education assistant that helps voters register, find polling places, and understand election timelines. Powered by Google Civic Information API, Google Maps, and AI." />

@@ -3,6 +3,7 @@ import { Send, Vote, MapPin, Calendar, Languages, Info, Search, Menu, Copy, Chec
 import { motion, AnimatePresence } from 'framer-motion';
 import { chatWithGemini } from './services/gemini';
 import { getPollingData, getCalendarEventUrl } from './services/google-apis';
+import DOMPurify from 'dompurify';
 import './App.css';
 import ReactMarkdown from 'react-markdown';
 
@@ -367,6 +368,9 @@ const Message = ({ text, sender, timestamp, cardData, mapsUrl, calendarUrl }) =>
     }
   }
 
+  // Security: Sanitize all markdown content before rendering to prevent XSS
+  const sanitizedText = DOMPurify.sanitize(cleanText);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -374,7 +378,15 @@ const Message = ({ text, sender, timestamp, cardData, mapsUrl, calendarUrl }) =>
       className={`message-bubble ${isBot ? 'bot' : 'user'}`}
     >
       <div className="message-content">
-        {cleanText && <ReactMarkdown>{cleanText}</ReactMarkdown>}
+        {sanitizedText && (
+          <ReactMarkdown
+            components={{
+              a: ({node, ...props}) => <a {...props} target="_blank" rel="noreferrer" />
+            }}
+          >
+            {sanitizedText}
+          </ReactMarkdown>
+        )}
         {timelineData && <TimelineRenderer stages={timelineData} />}
         {cardData?.contests?.length > 0 && <BallotRenderer contests={cardData.contests} />}
         {cardData && !cardData.contests && <ElectionInfoCard data={cardData} />}
