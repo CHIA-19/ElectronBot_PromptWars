@@ -15,38 +15,41 @@ const SUGGESTED_CHIPS = [
   "When is the registration deadline?",
 ];
 
-// ── Election data by State → District ────────────────────────────────────────
+// ── Election data: All Indian States/UTs + US States ─────────────────────────
 const ELECTION_DATA = {
-  "Haryana": {
-    type: "🏛️ Local Body Elections",
-    date: "May 10, 2026",
-    isoDate: "2026-05-10",
-    districts: {
-      "Ambala":    { body: "Ambala Municipal Corporation",   date: "2026-05-10", type: "Municipal Corporation" },
-      "Panchkula": { body: "Panchkula Municipal Corporation",date: "2026-05-10", type: "Municipal Corporation" },
-      "Sonipat":   { body: "Sonipat Municipal Corporation",  date: "2026-05-10", type: "Municipal Corporation" },
-    }
-  },
-  "Himachal Pradesh": {
-    type: "🏛️ Local Body Elections",
-    date: "June 2026 (TBD)",
-    isoDate: "2026-06-15",
-    districts: {
-      "Dharamshala": { body: "Dharamshala Municipal Corporation", date: "2026-06-15", type: "Municipal Corporation" },
-      "Shimla":      { body: "Shimla Municipal Corporation",      date: "2026-06-15", type: "Municipal Corporation" },
-    }
-  },
-  "United States": {
-    type: "🇺🇸 US Midterm Elections",
-    date: "November 3, 2026",
-    isoDate: "2026-11-03",
-    districts: {
-      "California":  { body: "CA General Election",    date: "2026-11-03", type: "State General" },
-      "Texas":       { body: "TX General Election",    date: "2026-11-03", type: "State General" },
-      "New York":    { body: "NY General Election",    date: "2026-11-03", type: "State General" },
-      "Florida":     { body: "FL General Election",    date: "2026-11-03", type: "State General" },
-    }
-  },
+  "Haryana":           { type: "Local Body Elections", isoDate: "2026-05-10", districts: { "Ambala": { body: "Ambala Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Panchkula": { body: "Panchkula Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Sonipat": { body: "Sonipat Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Faridabad": { body: "Faridabad Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Gurugram": { body: "Gurugram Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Rohtak": { body: "Rohtak Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Hisar": { body: "Hisar Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" }, "Karnal": { body: "Karnal Municipal Corporation", date: "2026-05-10", type: "Municipal Corp" } } },
+  "Himachal Pradesh":  { type: "Local Body Elections", isoDate: "2026-06-15", districts: { "Shimla": { body: "Shimla Municipal Corporation", date: "2026-06-15", type: "Municipal Corp" }, "Dharamshala": { body: "Dharamshala Municipal Corporation", date: "2026-06-15", type: "Municipal Corp" }, "Mandi": { body: "Mandi Municipal Council", date: "2026-06-15", type: "Municipal Council" }, "Solan": { body: "Solan Municipal Council", date: "2026-06-15", type: "Municipal Council" }, "Kullu": { body: "Kullu Municipal Council", date: "2026-06-15", type: "Municipal Council" } } },
+  "Andhra Pradesh":    { type: "State Assembly Elections", isoDate: "2029-01-01", districts: { "Visakhapatnam": { body: "AP Assembly", date: "2029-01-01", type: "State Assembly" }, "Vijayawada": { body: "AP Assembly", date: "2029-01-01", type: "State Assembly" }, "Guntur": { body: "AP Assembly", date: "2029-01-01", type: "State Assembly" }, "Tirupati": { body: "AP Assembly", date: "2029-01-01", type: "State Assembly" }, "Kurnool": { body: "AP Assembly", date: "2029-01-01", type: "State Assembly" } } },
+  "Arunachal Pradesh": { type: "State Assembly Elections", isoDate: "2029-01-01", districts: { "Itanagar": { body: "AR Assembly", date: "2029-01-01", type: "State Assembly" }, "Naharlagun": { body: "AR Assembly", date: "2029-01-01", type: "State Assembly" }, "Pasighat": { body: "AR Assembly", date: "2029-01-01", type: "State Assembly" }, "Tawang": { body: "AR Assembly", date: "2029-01-01", type: "State Assembly" } } },
+  "Assam":             { type: "State Assembly Elections", isoDate: "2026-04-01", districts: { "Guwahati": { body: "Assam Assembly", date: "2026-04-01", type: "State Assembly" }, "Dibrugarh": { body: "Assam Assembly", date: "2026-04-01", type: "State Assembly" }, "Jorhat": { body: "Assam Assembly", date: "2026-04-01", type: "State Assembly" }, "Silchar": { body: "Assam Assembly", date: "2026-04-01", type: "State Assembly" }, "Tezpur": { body: "Assam Assembly", date: "2026-04-01", type: "State Assembly" } } },
+  "Bihar":             { type: "State Assembly Elections", isoDate: "2025-11-01", districts: { "Patna": { body: "Bihar Assembly", date: "2025-11-01", type: "State Assembly" }, "Gaya": { body: "Bihar Assembly", date: "2025-11-01", type: "State Assembly" }, "Muzaffarpur": { body: "Bihar Assembly", date: "2025-11-01", type: "State Assembly" }, "Bhagalpur": { body: "Bihar Assembly", date: "2025-11-01", type: "State Assembly" }, "Darbhanga": { body: "Bihar Assembly", date: "2025-11-01", type: "State Assembly" } } },
+  "Chhattisgarh":      { type: "State Assembly Elections", isoDate: "2028-12-01", districts: { "Raipur": { body: "CG Assembly", date: "2028-12-01", type: "State Assembly" }, "Bhilai": { body: "CG Assembly", date: "2028-12-01", type: "State Assembly" }, "Bilaspur": { body: "CG Assembly", date: "2028-12-01", type: "State Assembly" }, "Korba": { body: "CG Assembly", date: "2028-12-01", type: "State Assembly" } } },
+  "Goa":               { type: "State Assembly Elections", isoDate: "2027-02-01", districts: { "Panaji": { body: "Goa Assembly", date: "2027-02-01", type: "State Assembly" }, "Margao": { body: "Goa Assembly", date: "2027-02-01", type: "State Assembly" }, "Vasco da Gama": { body: "Goa Assembly", date: "2027-02-01", type: "State Assembly" } } },
+  "Gujarat":           { type: "State Assembly Elections", isoDate: "2027-12-01", districts: { "Ahmedabad": { body: "Gujarat Assembly", date: "2027-12-01", type: "State Assembly" }, "Surat": { body: "Gujarat Assembly", date: "2027-12-01", type: "State Assembly" }, "Vadodara": { body: "Gujarat Assembly", date: "2027-12-01", type: "State Assembly" }, "Rajkot": { body: "Gujarat Assembly", date: "2027-12-01", type: "State Assembly" }, "Gandhinagar": { body: "Gujarat Assembly", date: "2027-12-01", type: "State Assembly" } } },
+  "Jharkhand":         { type: "State Assembly Elections", isoDate: "2029-11-01", districts: { "Ranchi": { body: "JH Assembly", date: "2029-11-01", type: "State Assembly" }, "Jamshedpur": { body: "JH Assembly", date: "2029-11-01", type: "State Assembly" }, "Dhanbad": { body: "JH Assembly", date: "2029-11-01", type: "State Assembly" } } },
+  "Karnataka":         { type: "State Assembly Elections", isoDate: "2028-05-01", districts: { "Bengaluru": { body: "KA Assembly", date: "2028-05-01", type: "State Assembly" }, "Mysuru": { body: "KA Assembly", date: "2028-05-01", type: "State Assembly" }, "Hubli": { body: "KA Assembly", date: "2028-05-01", type: "State Assembly" }, "Mangaluru": { body: "KA Assembly", date: "2028-05-01", type: "State Assembly" } } },
+  "Kerala":            { type: "State Assembly Elections", isoDate: "2026-04-01", districts: { "Thiruvananthapuram": { body: "Kerala Assembly", date: "2026-04-01", type: "State Assembly" }, "Kochi": { body: "Kerala Assembly", date: "2026-04-01", type: "State Assembly" }, "Kozhikode": { body: "Kerala Assembly", date: "2026-04-01", type: "State Assembly" }, "Thrissur": { body: "Kerala Assembly", date: "2026-04-01", type: "State Assembly" } } },
+  "Madhya Pradesh":    { type: "State Assembly Elections", isoDate: "2028-11-01", districts: { "Bhopal": { body: "MP Assembly", date: "2028-11-01", type: "State Assembly" }, "Indore": { body: "MP Assembly", date: "2028-11-01", type: "State Assembly" }, "Jabalpur": { body: "MP Assembly", date: "2028-11-01", type: "State Assembly" }, "Gwalior": { body: "MP Assembly", date: "2028-11-01", type: "State Assembly" } } },
+  "Maharashtra":       { type: "State Assembly Elections", isoDate: "2029-10-01", districts: { "Mumbai": { body: "MH Assembly", date: "2029-10-01", type: "State Assembly" }, "Pune": { body: "MH Assembly", date: "2029-10-01", type: "State Assembly" }, "Nagpur": { body: "MH Assembly", date: "2029-10-01", type: "State Assembly" }, "Nashik": { body: "MH Assembly", date: "2029-10-01", type: "State Assembly" }, "Thane": { body: "MH Assembly", date: "2029-10-01", type: "State Assembly" } } },
+  "Manipur":           { type: "State Assembly Elections", isoDate: "2027-03-01", districts: { "Imphal": { body: "MN Assembly", date: "2027-03-01", type: "State Assembly" }, "Thoubal": { body: "MN Assembly", date: "2027-03-01", type: "State Assembly" }, "Bishnupur": { body: "MN Assembly", date: "2027-03-01", type: "State Assembly" } } },
+  "Meghalaya":         { type: "State Assembly Elections", isoDate: "2028-03-01", districts: { "Shillong": { body: "ML Assembly", date: "2028-03-01", type: "State Assembly" }, "Tura": { body: "ML Assembly", date: "2028-03-01", type: "State Assembly" } } },
+  "Mizoram":           { type: "State Assembly Elections", isoDate: "2028-11-01", districts: { "Aizawl": { body: "MZ Assembly", date: "2028-11-01", type: "State Assembly" }, "Lunglei": { body: "MZ Assembly", date: "2028-11-01", type: "State Assembly" } } },
+  "Nagaland":          { type: "State Assembly Elections", isoDate: "2028-02-01", districts: { "Kohima": { body: "NL Assembly", date: "2028-02-01", type: "State Assembly" }, "Dimapur": { body: "NL Assembly", date: "2028-02-01", type: "State Assembly" } } },
+  "Odisha":            { type: "State Assembly Elections", isoDate: "2029-05-01", districts: { "Bhubaneswar": { body: "OD Assembly", date: "2029-05-01", type: "State Assembly" }, "Cuttack": { body: "OD Assembly", date: "2029-05-01", type: "State Assembly" }, "Rourkela": { body: "OD Assembly", date: "2029-05-01", type: "State Assembly" } } },
+  "Punjab":            { type: "State Assembly Elections", isoDate: "2027-03-01", districts: { "Chandigarh": { body: "PB Assembly", date: "2027-03-01", type: "State Assembly" }, "Ludhiana": { body: "PB Assembly", date: "2027-03-01", type: "State Assembly" }, "Amritsar": { body: "PB Assembly", date: "2027-03-01", type: "State Assembly" }, "Jalandhar": { body: "PB Assembly", date: "2027-03-01", type: "State Assembly" }, "Patiala": { body: "PB Assembly", date: "2027-03-01", type: "State Assembly" } } },
+  "Rajasthan":         { type: "State Assembly Elections", isoDate: "2028-12-01", districts: { "Jaipur": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" }, "Jodhpur": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" }, "Udaipur": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" }, "Kota": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" }, "Bikaner": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" }, "Ajmer": { body: "RJ Assembly", date: "2028-12-01", type: "State Assembly" } } },
+  "Sikkim":            { type: "State Assembly Elections", isoDate: "2029-05-01", districts: { "Gangtok": { body: "SK Assembly", date: "2029-05-01", type: "State Assembly" }, "Namchi": { body: "SK Assembly", date: "2029-05-01", type: "State Assembly" } } },
+  "Tamil Nadu":        { type: "State Assembly Elections", isoDate: "2026-04-01", districts: { "Chennai": { body: "TN Assembly", date: "2026-04-01", type: "State Assembly" }, "Coimbatore": { body: "TN Assembly", date: "2026-04-01", type: "State Assembly" }, "Madurai": { body: "TN Assembly", date: "2026-04-01", type: "State Assembly" }, "Tiruchirappalli": { body: "TN Assembly", date: "2026-04-01", type: "State Assembly" }, "Salem": { body: "TN Assembly", date: "2026-04-01", type: "State Assembly" } } },
+  "Telangana":         { type: "State Assembly Elections", isoDate: "2028-12-01", districts: { "Hyderabad": { body: "TS Assembly", date: "2028-12-01", type: "State Assembly" }, "Warangal": { body: "TS Assembly", date: "2028-12-01", type: "State Assembly" }, "Nizamabad": { body: "TS Assembly", date: "2028-12-01", type: "State Assembly" }, "Karimnagar": { body: "TS Assembly", date: "2028-12-01", type: "State Assembly" } } },
+  "Tripura":           { type: "State Assembly Elections", isoDate: "2028-03-01", districts: { "Agartala": { body: "TR Assembly", date: "2028-03-01", type: "State Assembly" }, "Udaipur": { body: "TR Assembly", date: "2028-03-01", type: "State Assembly" } } },
+  "Uttar Pradesh":     { type: "State Assembly Elections", isoDate: "2027-02-01", districts: { "Lucknow": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Kanpur": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Agra": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Varanasi": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Allahabad": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Meerut": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" }, "Noida": { body: "UP Assembly", date: "2027-02-01", type: "State Assembly" } } },
+  "Uttarakhand":       { type: "State Assembly Elections", isoDate: "2027-02-01", districts: { "Dehradun": { body: "UK Assembly", date: "2027-02-01", type: "State Assembly" }, "Haridwar": { body: "UK Assembly", date: "2027-02-01", type: "State Assembly" }, "Nainital": { body: "UK Assembly", date: "2027-02-01", type: "State Assembly" }, "Haldwani": { body: "UK Assembly", date: "2027-02-01", type: "State Assembly" } } },
+  "West Bengal":       { type: "State Assembly Elections", isoDate: "2026-04-01", districts: { "Kolkata": { body: "WB Assembly", date: "2026-04-01", type: "State Assembly" }, "Howrah": { body: "WB Assembly", date: "2026-04-01", type: "State Assembly" }, "Asansol": { body: "WB Assembly", date: "2026-04-01", type: "State Assembly" }, "Siliguri": { body: "WB Assembly", date: "2026-04-01", type: "State Assembly" }, "Darjeeling": { body: "WB Assembly", date: "2026-04-01", type: "State Assembly" } } },
+  "Delhi":             { type: "State Assembly Elections", isoDate: "2030-02-01", districts: { "Central Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" }, "East Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" }, "New Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" }, "North Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" }, "South Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" }, "West Delhi": { body: "Delhi Assembly", date: "2030-02-01", type: "State Assembly" } } },
+  "Jammu & Kashmir":  { type: "UT Assembly Elections", isoDate: "2029-09-01", districts: { "Srinagar": { body: "J&K Assembly", date: "2029-09-01", type: "UT Assembly" }, "Jammu": { body: "J&K Assembly", date: "2029-09-01", type: "UT Assembly" }, "Anantnag": { body: "J&K Assembly", date: "2029-09-01", type: "UT Assembly" }, "Baramulla": { body: "J&K Assembly", date: "2029-09-01", type: "UT Assembly" } } },
+  "Ladakh":            { type: "UT Council Elections", isoDate: "2028-01-01", districts: { "Leh": { body: "Leh Hill Council", date: "2028-01-01", type: "Hill Council" }, "Kargil": { body: "Kargil Hill Council", date: "2028-01-01", type: "Hill Council" } } },
+  "Puducherry":        { type: "UT Assembly Elections", isoDate: "2026-05-01", districts: { "Puducherry": { body: "PY Assembly", date: "2026-05-01", type: "UT Assembly" }, "Karaikal": { body: "PY Assembly", date: "2026-05-01", type: "UT Assembly" } } },
+  "United States":     { type: "US Midterm Elections", isoDate: "2026-11-03", districts: { "California": { body: "CA General Election", date: "2026-11-03", type: "State General" }, "Texas": { body: "TX General Election", date: "2026-11-03", type: "State General" }, "New York": { body: "NY General Election", date: "2026-11-03", type: "State General" }, "Florida": { body: "FL General Election", date: "2026-11-03", type: "State General" }, "Illinois": { body: "IL General Election", date: "2026-11-03", type: "State General" }, "Pennsylvania": { body: "PA General Election", date: "2026-11-03", type: "State General" }, "Ohio": { body: "OH General Election", date: "2026-11-03", type: "State General" }, "Georgia": { body: "GA General Election", date: "2026-11-03", type: "State General" } } },
 };
 
 const selectStyle = {
@@ -123,15 +126,13 @@ const CountdownTimer = () => {
         {Object.keys(stateData.districts).map(d => <option key={d} value={d}>{d}</option>)}
       </select>
 
-      {/* Election Info */}
+      {/* Election Info — no emojis, clean display */}
       {districtData && (
         <div style={{ background: 'rgba(59,130,246,0.08)', borderRadius: 10, padding: '8px 10px', marginBottom: '0.5rem', border: '1px solid rgba(59,130,246,0.2)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-            <span style={{ fontSize: '0.7rem', background: 'rgba(59,130,246,0.2)', color: 'var(--primary-color)', padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{stateData.type}</span>
-          </div>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600, margin: '2px 0' }}>📍 {selectedDistrict}</p>
+          <span style={{ fontSize: '0.7rem', background: 'rgba(59,130,246,0.2)', color: 'var(--primary-color)', padding: '2px 8px', borderRadius: 20, fontWeight: 600, display: 'inline-block', marginBottom: 4 }}>{stateData.type}</span>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600, margin: '2px 0' }}>{selectedDistrict}</p>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', margin: '2px 0' }}>{districtData.body}</p>
-          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', margin: '2px 0' }}>🗓️ {districtData.type} · {districtData.date}</p>
+          <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', margin: '2px 0' }}>{districtData.type} &middot; {districtData.date}</p>
         </div>
       )}
 

@@ -126,9 +126,37 @@ const getLocalResponse = (message) => {
 };
 
 /**
+ * searchWeb — Fetches live search results from DuckDuckGo's free API.
+ * Used as a fallback when the AI needs current/real-time information.
+ * @param {string} query - The search query
+ * @returns {Promise<string>} - A summary of search results
+ */
+const searchWeb = async (query) => {
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const parts = [];
+    if (data.AbstractText) parts.push(data.AbstractText);
+    if (data.Answer) parts.push(data.Answer);
+    if (data.RelatedTopics?.length) {
+      data.RelatedTopics.slice(0, 3).forEach(t => {
+        if (t.Text) parts.push(t.Text);
+      });
+    }
+    return parts.length > 0
+      ? parts.join('\n\n')
+      : `No direct results found. [Google Search](https://www.google.com/search?q=${encodeURIComponent(query)})`;
+  } catch {
+    return `[Search Google for "${query}"](https://www.google.com/search?q=${encodeURIComponent(query)})`;
+  }
+};
+
+/**
  * Main chat function for ElectionBot.
- * Uses Groq (Llama 3) as the primary AI engine.
- * Falls back to intelligent local responses if the API is unavailable.
+ * Uses Groq (Llama 3.3) as primary engine with web search fallback.
+ * If the AI signals uncertainty, searchWeb() is called for live data.
  *
  * @param {Array} messages - The full conversation history
  * @returns {Promise<string>} - The AI response text
@@ -139,7 +167,6 @@ export const chatWithGemini = async (messages) => {
   // --- Attempt Live AI Connection via Groq ---
   if (groq) {
     try {
-      // Format conversation history for the OpenAI-compatible API
       const formattedMessages = [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages.map(m => ({
@@ -148,14 +175,44 @@ export const chatWithGemini = async (messages) => {
         }))
       ];
 
+      // First pass — get AI response
       const response = await groq.chat.completions.create({
-        model: 'llama-3.1-8b-instant', // Ultra-fast Llama 3 via Groq
+        model: 'llama-3.3-70b-versatile',
         messages: formattedMessages,
-        temperature: 0.7,
+        temperature: 0.6,
         max_tokens: 1024,
       });
 
-      return response.choices[0].message.content;
+      let aiText = response.choices[0].message.content;
+
+      // If AI signals it doesn't know, do a web search and supplement
+      const uncertainPhrases = [
+        "i don't have", "i don't know", "not sure", "cannot confirm",
+        "no information", "check online", "verify online", "i'm not certain",
+        "as of my knowledge cutoff", "i cannot access"
+      ];
+      const needsSearch = uncertainPhrases.some(p => aiText.toLowerCase().includes(p));
+
+      if (needsSearch) {
+        console.log('AI uncertain — performing web search for:', latestMessage);
+        const searchResults = await searchWeb(latestMessage + ' election India 2026');
+        if (searchResults) {
+          // Second pass — feed search results back to the AI
+          const supplemented = await groq.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              ...formattedMessages,
+              { role: 'assistant', content: aiText },
+              { role: 'user', content: `Here are live web search results that may help:\n\n${searchResults}\n\nNow provide a complete, helpful answer using this information.` }
+            ],
+            temperature: 0.5,
+            max_tokens: 1024,
+          });
+          aiText = supplemented.choices[0].message.content;
+        }
+      }
+
+      return aiText;
     } catch (error) {
       console.warn('Groq API unavailable, using local expert mode:', error.message);
     }
